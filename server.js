@@ -1,5 +1,6 @@
 var http = require("http");
 var url = require("url");
+var io = require("socket.io");
 
 function start(route) {
     function onRequest(request, response) {
@@ -8,8 +9,20 @@ function start(route) {
         route(pathname, response);
     };
     
-    http.createServer(onRequest).listen(8888);
+    //our node http server
+    var server = http.createServer(onRequest);
+    var serv_io = io.listen(server);
+    server.listen(8888);
     console.log("Server has started");
+    
+    serv_io.sockets.on('connection', function (socket) {
+        console.log("IO Clients:", io.clients);
+        socket.join("defaultRoom");
+        socket.on('inputMessage', function (data) {
+            console.log("Message received: ", data);
+            serv_io.sockets.in("defaultRoom").emit("feedback", data.message);
+        });
+    });
 }
 
 exports.start = start;

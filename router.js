@@ -18,11 +18,9 @@ function index(response) {
     var params = {
         name: 'Harris'
     };
-    setTimeout(function () {
-        response.writeHead(200, {"Content-Type": "text/html"});
-        response.write(view.loadTemplate("view/index.html", params));
-        response.end();
-    }, 10000);
+    response.writeHead(200, {"Content-Type": "text/html"});
+    response.write(view.loadTemplate("view/index.html", params));
+    response.end();
 }
 
 function upload(response) {

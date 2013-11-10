@@ -1,8 +1,30 @@
 <html>
 <head>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript">
+    var socket = io.connect('http://localhost:8888');
+    socket.on('feedback', function (data) {
+        console.log("Received server update:", data);
+        var message = $('<div>').append(data);
+        $('.messages').append(message);
+    });
+</script>
 </head>
 <body>
-    <h1>Index.html</h1>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sendMessage').on('click', function (e) {
+                socket.emit('inputMessage', { message: $('#message').val() });
+            });
+        });
+    </script>
+    <h1>Index.html - My first socket.io app</h1>
     <p>Hello {{name}}</p>
+    <input type="text" id="message" name="message" />
+    <input type="button" id="sendMessage" name="sendMessage" value="Send!" />
+    <div class="messages">
+        Message goes here.
+    </div>
 </body>
 </html>
