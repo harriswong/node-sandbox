@@ -1,4 +1,4 @@
-var exec = require("child_process").exec;
+var view = require("./view");
 
 function route(pathname, response) {
     console.log("About to route a request for " + pathname);
@@ -9,24 +9,28 @@ function route(pathname, response) {
     } else {
         content = index(response);
     }
-    return content;
 }
 
 function index(response) {
     console.log("Called default routing...");
+    console.log("View: ", view);
     var content = "empty";
-    
-    exec("ls -lah", function (error, stdout, stderr) {
-        content = stdout;
-    });
-    
-    return content;
+    var params = {
+        name: 'Harris'
+    };
+    setTimeout(function () {
+        response.writeHead(200, {"Content-Type": "text/html"});
+        response.write(view.loadTemplate("view/index.html", params));
+        response.end();
+    }, 10000);
 }
 
 function upload(response) {
     console.log("Called upload routing...");
-    
-    return "Hello upload";
+    var date = new Date();
+    response.writeHead(200, {"Content-Type": "text/plain"});
+    response.write("Hello World!" + date.getTime());
+    response.end();
 }
 
 exports.route = route;
