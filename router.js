@@ -6,6 +6,8 @@ function route(pathname, response) {
     
     if (pathname == 'upload') {
         content = upload(response);
+    } else if(pathname == 'chat') {
+        content = chat(response);
     } else {
         content = index(response);
     }
@@ -20,6 +22,18 @@ function index(response) {
     };
     response.writeHead(200, {"Content-Type": "text/html"});
     response.write(view.loadTemplate("view/index.html", params));
+    response.end();
+}
+
+function chat(response) {
+    console.log("Called chat routing...");
+    console.log("View: ", view);
+    var content = "empty";
+    var params = {
+        name: 'Harris'
+    };
+    response.writeHead(200, {"Content-Type": "text/html"});
+    response.write(view.loadTemplate("view/chat.html", params));
     response.end();
 }
 
