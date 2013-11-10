@@ -20,8 +20,15 @@ function start(route) {
         socket.join("defaultRoom");
         socket.on('inputMessage', function (data) {
             console.log("Message received: ", data);
-            var feedback = data.username + ": " + data.message;
-            serv_io.sockets.in("defaultRoom").emit("feedback", feedback);
+            if (data.message) {
+                //if not empty
+                var feedback = data.username + ": " + data.message;
+                serv_io.sockets.in("defaultRoom").emit("feedback", feedback);
+            } else {
+                //back to this client
+                var feedback = "(Psst..Don't send an empty message...)";
+                socket.emit("feedback", feedback);
+            }
         });
     });
 }
