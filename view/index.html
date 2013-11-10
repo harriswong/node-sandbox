@@ -1,30 +1,72 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<style type="text/css">
+    .container {
+        width: 900px;
+        margin: 0 auto;
+    }
+</style>
+
 <script type="text/javascript">
     var socket = io.connect('http://localhost:8888');
     socket.on('feedback', function (data) {
         console.log("Received server update:", data);
         var message = $('<div>').append(data);
-        $('.messages').append(message);
+        $('.messages').prepend(message);
     });
 </script>
 </head>
 <body>
     <script type="text/javascript">
         $(document).ready(function () {
+            var sendMessage = function () {
+                var data = {
+                    username: $('#username').val(),
+                    message: $('#message').val()
+                }
+                socket.emit('inputMessage', data);
+            };
+            $('#message').on('keypress', function (e) {
+                var that = $(this);
+                if (e.keyCode == 13) {
+                    sendMessage();
+                    //clear message in input
+                    that.val("");
+                    that.focus();
+                }
+            });
             $('#sendMessage').on('click', function (e) {
-                socket.emit('inputMessage', { message: $('#message').val() });
+                sendMessage();
             });
         });
     </script>
-    <h1>Index.html - My first socket.io app</h1>
-    <p>Hello {{name}}</p>
-    <input type="text" id="message" name="message" />
-    <input type="button" id="sendMessage" name="sendMessage" value="Send!" />
-    <div class="messages">
-        Message goes here.
+    <div class="container">
+        <h1>Index.html - My first socket.io app</h1>
+        <p>Hello {{name}}</p>
+        <form>
+            <div>
+                <label>
+                    Your Name: 
+                    <input id="username" type="input" name="username" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Message:
+                    <input type="text" id="message" name="message" />
+                </label>
+            </div>
+            <div>
+                <input class="btn btn-default" type="button" id="sendMessage" name="sendMessage" value="Send!" />
+            </div>
+        </form>
+        <hr/>
+        <div class="messages">
+            Message goes here.
+        </div>
     </div>
 </body>
 </html>

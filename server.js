@@ -20,7 +20,8 @@ function start(route) {
         socket.join("defaultRoom");
         socket.on('inputMessage', function (data) {
             console.log("Message received: ", data);
-            serv_io.sockets.in("defaultRoom").emit("feedback", data.message);
+            var feedback = data.username + ": " + data.message;
+            serv_io.sockets.in("defaultRoom").emit("feedback", feedback);
         });
     });
 }
